@@ -13,20 +13,21 @@ typedef enum {
     TOKEN_EOF, // End of file/input
 } TokenType;
 
+// Token structure
 typedef struct {
     TokenType type;
     int value; // Only used for TOKEN_INT
 } Token;
 
-#include <ctype.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-// ... [Token types and Token struct here] ...
-
+// Function to tokenize the input
 Token *tokenize(char *source) {
     int capacity = 10;
     Token *tokens = malloc(capacity * sizeof(Token));
+    if (!tokens) {
+        fprintf(stderr, "Failed to allocate memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     int tokenCount = 0;
 
     while (*source != '\0') {
@@ -34,10 +35,13 @@ Token *tokenize(char *source) {
         if (tokenCount >= capacity) {
             capacity *= 2;
             tokens = realloc(tokens, capacity * sizeof(Token));
+            if (!tokens) {
+                fprintf(stderr, "Failed to reallocate memory\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         if (isdigit(*source)) {
-            // Tokenizing a number
             tokens[tokenCount].type = TOKEN_INT;
             tokens[tokenCount].value = strtol(source, &source, 10); // strtol advances the source pointer
         } else {
@@ -74,3 +78,31 @@ Token *tokenize(char *source) {
     return tokens;
 }
 
+// Function to print tokens for debugging
+void printToken(Token token) {
+    switch (token.type) {
+        case TOKEN_INT: 
+            printf("INT(%d) ", token.value); break;
+        case TOKEN_PLUS: 
+            printf("PLUS "); 
+            break;
+        case TOKEN_MINUS: 
+            printf("MINUS "); 
+            break;
+        case TOKEN_STAR: 
+            printf("STAR "); 
+            break;
+        case TOKEN_SLASH: 
+            printf("SLASH "); 
+            break;
+        case TOKEN_LPAREN: 
+            printf("LPAREN "); 
+            break;
+        case TOKEN_RPAREN: 
+            printf("RPAREN "); 
+            break;
+        case TOKEN_EOF: 
+            printf("EOF "); 
+            break;
+    }
+}
