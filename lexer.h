@@ -16,7 +16,7 @@ typedef enum {
 // Token structure
 typedef struct {
     TokenType type;
-    int value; // Only used for TOKEN_INT
+    int value; // Only used for TOKEN_INT and TOKEN_FLOAT
 } Token;
 
 #endif // LEXER_H
