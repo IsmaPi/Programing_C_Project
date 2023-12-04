@@ -10,6 +10,8 @@ typedef enum {
     TOKEN_SLASH,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
+    TOKEN_LAMBDA_X,
+    TOKEN_LAMBDA_Y,
     TOKEN_EOF,
 } TokenType;
 
