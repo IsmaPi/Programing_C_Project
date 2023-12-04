@@ -3,6 +3,7 @@
 
 typedef enum {
     TOKEN_INT,
+    TOKEN_FLOAT,
     TOKEN_PLUS,
     TOKEN_MINUS,
     TOKEN_STAR,
