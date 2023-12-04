@@ -9,7 +9,7 @@ typedef enum {
     TOKEN_SLASH,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
-    TOKEN_EOF, // End of file/input
+    TOKEN_EOF,
 } TokenType;
 
 // Token structure
