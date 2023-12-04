@@ -10,15 +10,18 @@ typedef enum {
     TOKEN_SLASH,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
-    TOKEN_LAMBDA_X,
-    TOKEN_LAMBDA_Y,
+    TOKEN_VARIABLE, // General variable token type
     TOKEN_EOF,
 } TokenType;
 
 // Token structure
 typedef struct {
     TokenType type;
-    int value; // Only used for TOKEN_INT and TOKEN_FLOAT
+    union {
+        int intValue;    // For TOKEN_INT
+        float floatValue; // For TOKEN_FLOAT
+        char* varName;    // For TOKEN_VARIABLE
+    };
 } Token;
 
 #endif // LEXER_H
