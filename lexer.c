@@ -106,6 +106,24 @@ void printToken(Token token) {
         case TOKEN_RPAREN: 
             printf("RPAREN "); 
             break;
+        case TOKEN_SIN: 
+            printf("SIN "); 
+            break;
+        case TOKEN_COS: 
+            printf("COS "); 
+            break;
+        case TOKEN_ASIN: 
+            printf("ASIN "); 
+            break;
+        case TOKEN_ACOS: 
+            printf("ACOS "); 
+            break;
+        case TOKEN_TAN: 
+            printf("TAN "); 
+            break;
+        case TOKEN_ATAN: 
+            printf("ATAN "); 
+            break;
         case TOKEN_EOF: 
             printf("EOF "); 
             break;
