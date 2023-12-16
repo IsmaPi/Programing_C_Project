@@ -3,9 +3,9 @@ typedef enum {
     TOKEN_PLUS, TOKEN_MINUS, TOKEN_STAR, TOKEN_SLASH, // Arithmetic operators
     TOKEN_LPAREN, TOKEN_RPAREN, // Parentheses
     TOKEN_SIN, TOKEN_COS, TOKEN_TAN, TOKEN_ATAN, TOKEN_ACOS, TOKEN_ASIN, //Tan, sin, cos
-    TOKEN_LOG, TOKEN_EXP, 
+    TOKEN_LOG, TOKEN_EXP, TOKEN_ABS,
     TOKEN_MODULO, TOKEN_POWER, 
-    TOKEN_INTEGRATRE, TOKEN_DERIVATIVE, 
+    TOKEN_INTEGRATRE, TOKEN_DERIVATIVE, //syntax: integrate(expression), derivative(expression)
 
 } TokenType;
 
@@ -80,32 +80,30 @@ ASTNode *parse_term(Token **tokens) {
     return node;
 }
 
-
 ASTNode *parse_unary_op(Token **tokens) {
     TokenType functionType = (*tokens)->type;
-    (*tokens)++; // Consume the 'sin' token
+    (*tokens)++; 
 
     if ((*tokens)->type != TOKEN_LPAREN) {
-        // Handle error: Expected left parenthesis after 'sin'
+        // Handle error: Expected left parenthesis 
     }
     (*tokens)++; // Consume the '(' token
 
-    ASTNode *operand = parse_expression(tokens);
+    // Parse the expression inside the function
+    ASTNode *expression = parse_expression(tokens);
 
     if ((*tokens)->type != TOKEN_RPAREN) {
-        // Handle error: Expected right parenthesis
+        // Handle error: Expected right parenthesis after expression
     }
     (*tokens)++; // Consume the ')' token
 
+    // Create a node for integrate or derivative
     ASTNode *node = malloc(sizeof(*node));
-    node->type = NODE_UNARY_OP;
+    node->type = NODE_UNARY_OP; 
     node->function = functionType;
-    node->operand = operand;
+    node->operand = expression;
 
     return node;
 }
-
-
-
 
 
