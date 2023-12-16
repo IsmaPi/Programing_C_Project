@@ -9,6 +9,22 @@ typedef enum {
 
 } TokenType;
 
+typedef struct Token {
+    TokenType type;
+    union {
+        int intValue;    // For integer values
+        char *strValue;  // For strings, like function names
+    };
+} Token;
+
+
+typedef enum {
+    NODE_NUMBER,
+    NODE_UNARY_OP,
+    NODE_BINARY_OP
+    // Add other node types as needed
+} NodeType;
+
 typedef struct ASTNode {
     NodeType type;
     union {
@@ -24,6 +40,45 @@ typedef struct ASTNode {
         int value; // For integer literals
     };
 } ASTNode;
+
+ASTNode *parse_expression(Token **tokens) {
+    ASTNode *node = parse_term(tokens); // parse_term to handle *, /, %
+
+    while ((*tokens)->type == TOKEN_PLUS || (*tokens)->type == TOKEN_MINUS) {
+        TokenType operation = (*tokens)->type;
+        (*tokens)++; // consume the operator
+
+        ASTNode *right = parse_term(tokens);
+        ASTNode *new_node = malloc(sizeof(*new_node));
+        new_node->type = NODE_BINARY_OP;
+        new_node->operation = operation;
+        new_node->left = node;
+        new_node->right = right;
+        node = new_node;
+    }
+
+    return node;
+}
+
+
+ASTNode *parse_term(Token **tokens) {
+    ASTNode *node = parse_factor(tokens); // parse_factor to handle numbers, parentheses, etc.
+
+    while ((*tokens)->type == TOKEN_STAR || (*tokens)->type == TOKEN_SLASH || (*tokens)->type == TOKEN_MODULO) {
+        TokenType operation = (*tokens)->type;
+        (*tokens)++; // consume the operator
+
+        ASTNode *right = parse_factor(tokens);
+        ASTNode *new_node = malloc(sizeof(*new_node));
+        new_node->type = NODE_BINARY_OP;
+        new_node->operation = operation;
+        new_node->left = node;
+        new_node->right = right;
+        node = new_node;
+    }
+
+    return node;
+}
 
 
 ASTNode *parse_unary_op(Token **tokens) {
@@ -49,4 +104,8 @@ ASTNode *parse_unary_op(Token **tokens) {
 
     return node;
 }
+
+
+
+
 
