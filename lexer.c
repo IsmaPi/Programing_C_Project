@@ -9,7 +9,7 @@ int match_keyword(char *source, const char *keyword, TokenType type, Token *toke
     size_t len = strlen(keyword);
     if (strncmp(source, keyword, len) == 0 && (isspace(source[len]) || source[len] == '/0')) {
         token->type = type;
-        return int(len); // Length of the keyword
+        return (int)len; // Length of the keyword
     }
     return 0;
 }
