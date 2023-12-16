@@ -7,11 +7,11 @@
 // Helper function to match keywords
 int match_keyword(char *source, const char *keyword, TokenType type, Token *token) {
     size_t len = strlen(keyword);
-    if (strncmp(source, keyword, len) == 0 && !isalnum(source[len]) && source[len] != '_') {
+    if (strncmp(source, keyword, len) == 0 && (isspace(source[len]) || source[len] == '/0')) {
         token->type = type;
-        return len; // Length of the keyword
+        return int(len); // Length of the keyword
     }
-    return 0; // No match
+    return 0;
 }
 
 Token *tokenize(char *source) {
@@ -26,7 +26,6 @@ Token *tokenize(char *source) {
     int advance_len = 0;
 
     while (*source != '\0') {
-        // Resize tokens array if necessary
         if (tokenCount >= capacity) {
             capacity *= 2;
             tokens = realloc(tokens, capacity * sizeof(Token));
@@ -36,12 +35,30 @@ Token *tokenize(char *source) {
             }
         }
 
-        if (isdigit(*source)) {
-            tokens[tokenCount].type = TOKEN_INT;
-            tokens[tokenCount].value = strtol(source, &source, 10); // strtol advances the source pointer
-        } else {
-            // Check for mathematical functions and constants
-            if ((advance_len = match_keyword(source, "cos", TOKEN_COS, &tokens[tokenCount])) ||
+        if (isdigit(*source) || *source == '.') {
+            char *end;
+            tokens[tokenCount].type = strtof(source, &end);
+            if (end != source){
+                tokens[tokenCount].type = (*source == '.') ? TOKEN_FLOAT : TOKEN_INT;
+                source = end;
+            }
+
+        } else if (isalpha(*source) || *source == '_') {
+            char *start = source;
+            while (isalnum(*source) || *source == '_') {
+                source++;
+            }
+
+            size_t len = source - start;
+            tokens[tokenCount].varName = malloc(len + 1);
+            if (!tokens[tokenCount].varName) {
+                fprintf(stderr, "Failed to allocate memory\n");
+                exit(EXIT_FAILURE);
+            }
+            strncpy(tokens[tokenCount].varName, start, len);
+            tokens[tokenCount].varName[len] = '\0';
+            tokens[tokenCount].type = TOKEN_VARIABLE;
+        } else if ((advance_len = match_keyword(source, "cos", TOKEN_COS, &tokens[tokenCount])) ||
                 (advance_len = match_keyword(source, "sin", TOKEN_SIN, &tokens[tokenCount])) ||
                 (advance_len = match_keyword(source, "pi", TOKEN_PI, &tokens[tokenCount])) ||
                 (advance_len = match_keyword(source, "e", TOKEN_E, &tokens[tokenCount])) ||
@@ -58,18 +75,18 @@ Token *tokenize(char *source) {
                 (advance_len = match_keyword(source, "power", TOKEN_POWER, &tokens[tokenCount])) ||
                 (advance_len = match_keyword(source, "modulo", TOKEN_MODULO, &tokens[tokenCount])) ) {
                 source += advance_len; // Advance the source pointer by the length of the keyword
-            } else {
-                // Handle single-character tokens
-                switch (*source) {
-                    case '+': tokens[tokenCount].type = TOKEN_PLUS; break;
-                    case '-': tokens[tokenCount].type = TOKEN_MINUS; break;
-                    case '*': tokens[tokenCount].type = TOKEN_STAR; break;
-                    case '/': tokens[tokenCount].type = TOKEN_SLASH; break;
-                    case '(': tokens[tokenCount].type = TOKEN_LPAREN; break;
-                    case ')': tokens[tokenCount].type = TOKEN_RPAREN; break;
-                    default: 
-                        printf("Unexpected character: %c\n", *source);
-                        exit(1);
+        } else {
+            // Handle single-character tokens
+            switch (*source) {
+                case '+': tokens[tokenCount].type = TOKEN_PLUS; break;
+                case '-': tokens[tokenCount].type = TOKEN_MINUS; break;
+                case '*': tokens[tokenCount].type = TOKEN_STAR; break;
+                case '/': tokens[tokenCount].type = TOKEN_SLASH; break;
+                case '(': tokens[tokenCount].type = TOKEN_LPAREN; break;
+                case ')': tokens[tokenCount].type = TOKEN_RPAREN; break;
+                default: 
+                    printf("Unexpected character: %c\n", *source);
+                    exit(1);
                 }
                 source++; // Advance the source pointer by one character
             }
@@ -105,6 +122,15 @@ void printToken(Token token) {
             break;
         case TOKEN_RPAREN: 
             printf("RPAREN "); 
+            break;
+        case TOKEN_VARIABLE:
+            printf("VARIABLE(%s) ", token.varName); 
+            break;
+        case TOKEN_FLOAT:
+            printf("FLOAT(%f) ", token.value); 
+            break;
+        case TOKEN_EXP:
+            printf("EXP "); 
             break;
         case TOKEN_SIN: 
             printf("SIN "); 

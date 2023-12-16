@@ -1,6 +1,8 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stdlib.h>
+
 typedef enum {
     TOKEN_INT,
     TOKEN_FLOAT,
@@ -10,7 +12,7 @@ typedef enum {
     TOKEN_SLASH,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
-    TOKEN_VARIABLE, // General variable token type
+    TOKEN_VARIABLE,
     TOKEN_COS, 
     TOKEN_SIN,
     TOKEN_PI,
