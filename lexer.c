@@ -7,7 +7,7 @@
 // Helper function to match keywords
 int match_keyword(char *source, const char *keyword, TokenType type, Token *token) {
     size_t len = strlen(keyword);
-    if (strncmp(source, keyword, len) == 0 && (isspace(source[len]) || source[len] == '/0')) {
+    if (strncmp(source, keyword, len) == 0 && (isspace(source[len]) || source[len] == '\0')) {
         token->type = type;
         return (int)len; // Length of the keyword
     }
@@ -16,7 +16,7 @@ int match_keyword(char *source, const char *keyword, TokenType type, Token *toke
 
 Token *tokenize(char *source) {
     int capacity = 10;
-    Token *tokens = malloc(capacity * sizeof(Token));
+    Token *tokens = (Token*)malloc(capacity * sizeof(Token));
     if (!tokens) {
         fprintf(stderr, "Failed to allocate memory\n");
         exit(EXIT_FAILURE);
@@ -28,7 +28,7 @@ Token *tokenize(char *source) {
     while (*source != '\0') {
         if (tokenCount >= capacity) {
             capacity *= 2;
-            tokens = realloc(tokens, capacity * sizeof(Token));
+            tokens = (Token*)realloc(tokens, capacity * sizeof(Token));
             if (!tokens) {
                 fprintf(stderr, "Failed to reallocate memory\n");
                 exit(EXIT_FAILURE);
@@ -37,12 +37,19 @@ Token *tokenize(char *source) {
 
         if (isdigit(*source) || *source == '.') {
             char *end;
-            tokens[tokenCount].type = strtof(source, &end);
-            if (end != source){
-                tokens[tokenCount].type = (*source == '.') ? TOKEN_FLOAT : TOKEN_INT;
+            float value = strtof(source, &end); // Parse the float value
+            if (end != source) {
+                // Check if there is a decimal point in the parsed substring
+                char *decimal_point = strchr(source, '.');
+                if (decimal_point != NULL && decimal_point < end) {
+                    tokens[tokenCount].type = TOKEN_FLOAT;
+                    tokens[tokenCount].floatValue = value; // Set the floatValue
+                } else {
+                    tokens[tokenCount].type = TOKEN_INT;
+                    tokens[tokenCount].intValue = (int)value; // Convert and set intValue
+                }
                 source = end;
             }
-
         } else if (isalpha(*source) || *source == '_') {
             char *start = source;
             while (isalnum(*source) || *source == '_') {
@@ -50,7 +57,7 @@ Token *tokenize(char *source) {
             }
 
             size_t len = source - start;
-            tokens[tokenCount].varName = malloc(len + 1);
+            tokens[tokenCount].varName = (char*)malloc(len + 1);
             if (!tokens[tokenCount].varName) {
                 fprintf(stderr, "Failed to allocate memory\n");
                 exit(EXIT_FAILURE);
