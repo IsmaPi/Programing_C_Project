@@ -124,6 +124,33 @@ void printToken(Token token) {
         case TOKEN_ATAN: 
             printf("ATAN "); 
             break;
+        case TOKEN_PI: 
+            printf("PI "); 
+            break;
+        case TOKEN_E: 
+            printf("E "); 
+            break;
+        case TOKEN_SQRT: 
+            printf("SQRT "); 
+            break;
+        case TOKEN_LOG: 
+            printf("LOG "); 
+            break;
+        case TOKEN_ABS: 
+            printf("ABS "); 
+            break;
+        case TOKEN_DERIVATIVE: 
+            printf("DERIVATIVE "); 
+            break;
+        case TOKEN_INTEGRAL: 
+            printf("INTEGRAL "); 
+            break;
+        case TOKEN_POWER: 
+            printf("POWER "); 
+            break;
+        case TOKEN_MODULO: 
+            printf("MODULO "); 
+            break;
         case TOKEN_EOF: 
             printf("EOF "); 
             break;
