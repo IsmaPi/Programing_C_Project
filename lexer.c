@@ -87,13 +87,11 @@ Token *tokenize(char *source) {
                 default: 
                     printf("Unexpected character: %c\n", *source);
                     exit(1);
-                }
+            }
                 source++; // Advance the source pointer by one character
             }
         }
-        tokenCount++;
-    }
-
+    tokenCount++;
     // Mark the end of the tokens
     tokens[tokenCount].type = TOKEN_EOF;
     return tokens;
