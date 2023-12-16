@@ -1,6 +1,5 @@
 #include "lexer.c"
-#include "parser.h"
-
+#inclide "parser.h"
 //hierarchy:
 // parse_expression -  for handling addition and subtraction.
 // parse_term - for handling multiplication, division, and modulo.
@@ -72,10 +71,11 @@ ASTNode *parse_factor(Token **tokens) {
         return node;
     } else if ((*tokens)->type == TOKEN_SIN || (*tokens)->type == TOKEN_COS ||
          (*tokens)->type == TOKEN_TAN || (*tokens)->type == TOKEN_EXP || (*tokens)->type == TOKEN_LOG || (*tokens)->type == TOKEN_ACOS ||
-         (*tokens)->type == TOKEN_ATAN || (*tokens)->type == TOKEN_ASIN){
+         (*tokens)->type == TOKEN_ATAN || (*tokens)->type == TOKEN_ASIN || (*tokens)->type == TOKEN_ABS ||type == TOKEN_INTEGRATE || type == TOKEN_DERIVATIVE){
     
         return parse_unary_op(tokens);
     }
     // Handle other cases or errors ... TO DO
 }
+
 
