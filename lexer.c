@@ -102,7 +102,7 @@ Token *tokenize(char *source) {
 void printToken(Token token) {
     switch (token.type) {
         case TOKEN_INT: 
-            printf("INT(%d) ", token.value); break;
+            printf("INT(%d) ", token.intValue); break;
         case TOKEN_PLUS: 
             printf("PLUS "); 
             break;
@@ -125,7 +125,7 @@ void printToken(Token token) {
             printf("VARIABLE(%s) ", token.varName); 
             break;
         case TOKEN_FLOAT:
-            printf("FLOAT(%f) ", token.value); 
+            printf("FLOAT(%f) ", token.floatValue); 
             break;
         case TOKEN_EXP:
             printf("EXP "); 
